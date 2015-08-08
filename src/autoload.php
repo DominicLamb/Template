@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Autloader
+ * Autoloader
  *
  * @version 1.0
  * @author Dominic

@@ -2,6 +2,7 @@
 namespace Schaflein\Template;
 use \ArrayAccess;
 use \RuntimeException;
+
 class Template implements ArrayAccess {
 	private $basePath;
 	private $elements = array();
