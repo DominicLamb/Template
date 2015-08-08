@@ -7,9 +7,9 @@ class RendererTest extends PHPUnit_Framework_TestCase {
 	private $template;
     public function SetUp() {
 		$path = __DIR__;
-		$this->renderer = new \ACMS\Template\Renderer();
-		$this->tree = new \ACMS\Template\RenderTree();
-		$this->template = new \ACMS\Template\Template($path . DIRECTORY_SEPARATOR . 'test_template/');
+		$this->renderer = new \Schaflein\Template\Renderer();
+		$this->tree = new \Schaflein\Template\RenderTree();
+		$this->template = new \Schaflein\Template\Template($path . DIRECTORY_SEPARATOR . 'test_template/');
 		
     }
 	/**
