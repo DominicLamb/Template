@@ -10,10 +10,9 @@ class Renderer {
 			'data' => $data
 		);
 	}
-	public function addNamespaceData($namespace, $key, $value) {
-		if(!isset($this->namespaces[$name])) {
-			throw new RuntimeException('Namespace has not been loaded: ' . $namespace);
-		}
+	public function addNamespaceData($name, $key, $value) {
+		$namespace = $this->getNamespace($name);
+        $namespace['data'][$key] = $value;
 	}
 	public function getNamespace($name) {
 		if(!isset($this->namespaces[$name])) {
