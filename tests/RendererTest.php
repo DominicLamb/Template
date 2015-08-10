@@ -69,6 +69,22 @@ class RendererTest extends PHPUnit_Framework_TestCase {
 		$this->assertSame('blue and red and green', $string);
 	}
 
+    public function testHandleTouchingSingleArg() {
+		$this->template->addFile('test');
+		$this->tree->add('touchingSingleArg', 'root', 'blue');
+		$this->tree->setRoot('root');
+		$string = $this->renderer->render($this->tree, $this->template);
+		$this->assertSame('blueblueblue', $string);
+	}
+
+    public function testHandleTouchingMultipleArg() {
+		$this->template->addFile('test');
+		$this->tree->add('touchingMultipleArg', 'root', 'blue', 'red', 'green');
+		$this->tree->setRoot('root');
+		$string = $this->renderer->render($this->tree, $this->template);
+		$this->assertSame('blueredgreen', $string);
+	}
+
 
 
 

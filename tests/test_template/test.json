@@ -1,11 +1,15 @@
 {
-	"simpleString": "This is a simple string",
-	"simpleJustArg": "<ARG1>",
-	"simpleFirstArg": "Blue is <ARG1>",
-	"nestedFirstArg": "Blue is <AR<ARG1>G1>",
-	"simpleMultipleArg": "<ARG1> and <ARG2> and <ARG3>",
-
-	"badTokenStart": "Blue is ARG1>",
 	"badTokenEnd": "Blue is <ARG1",
-	"badTokenIndex":  "Blue is <ARG>"
+	"badTokenIndex": "Blue is <ARG>",
+	"badTokenStart": "Blue is ARG1>",
+
+	"nestedFirstArg": "Blue is <AR<ARG1>G1>",
+
+	"simpleFirstArg": "Blue is <ARG1>",
+	"simpleJustArg": "<ARG1>",
+	"simpleMultipleArg": "<ARG1> and <ARG2> and <ARG3>",
+	"simpleString": "This is a simple string",
+
+	"touchingSingleArg": "<ARG1><ARG1><ARG1>",
+	"touchingMultipleArg": "<ARG1><ARG2><ARG3>"
 }
