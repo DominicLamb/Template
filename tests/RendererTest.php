@@ -10,8 +10,8 @@ class RendererTest extends PHPUnit_Framework_TestCase {
 		$this->renderer = new \Schaflein\Template\Renderer();
 		$this->tree = new \Schaflein\Template\RenderTree();
 		$this->template = new \Schaflein\Template\Template($path . DIRECTORY_SEPARATOR . 'test_template/');
-		
     }
+
 	/**
 	 * Ensure that an empty tree throws an exception - Cannot render anything
 	 * @expectedException RuntimeException
