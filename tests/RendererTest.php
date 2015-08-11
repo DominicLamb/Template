@@ -119,5 +119,21 @@ class RendererTest extends PHPUnit_Framework_TestCase {
 		$string = $this->renderer->render($this->tree, $this->template);
 		$this->assertSame('Blue is <ARblueG1>', $string);
 	}
+
+	public function testHandleArrayArg() {
+		$this->template->addFile('test');
+		$this->tree->add('testArrayToken', 'root', array('test' => 'string', 'data' => 'red'));
+		$this->tree->setRoot('root');
+		$string = $this->renderer->render($this->tree, $this->template);
+		$this->assertSame('Blue is red', $string);
+	}
+
+	public function testHandleArrayArgInvalidIndex() {
+		$this->template->addFile('test');
+		$this->tree->add('testArrayToken', 'root', array('test' => 'string'));
+		$this->tree->setRoot('root');
+		$string = $this->renderer->render($this->tree, $this->template);
+		$this->assertSame('Blue is ', $string);
+	}
 }
 ?>
