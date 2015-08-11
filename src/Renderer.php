@@ -67,7 +67,7 @@ class Renderer {
 				}
 			}
 		}
-		while($pos !== false);
+		while($pos !== false && isset($outString[$pos]));
 
 		return $outString;
 	}
@@ -89,11 +89,17 @@ class Renderer {
 			*/
 			$outString = substr($string, 0, $tagStart);
 
+
+			$token = substr($string, $tagStart + 1, ($tagEnd - $tagStart - 1));
+
+			/*
+				Get the relevant data from the argument for this token
+			*/
+			$data = self::getArgValue($arg, $token);
 			/*
 				Replace token with text
 			*/
-
-			$outString .= $arg;
+			$outString .= $data;
 
 			/*
 				Add the rest of the string
@@ -101,6 +107,21 @@ class Renderer {
 			$outString .= substr($string, $tagEnd + 1);
 		}
 		return $outString;
+	}
+    private function getArgValue($arg, $token) {
+		$data = null;
+		$pos = strpos($token, ':');
+		if($pos !== false) {
+			$index = substr($token, $pos + 1);
+			if(isset($arg[$index])) {
+				$data = $arg[$index];
+			}
+		}
+		else
+		{
+			$data = $arg;
+		}
+		return $data;
 	}
 	private function renderNamespace($element, $namespace) {
 		$data = $namespace['data'];
