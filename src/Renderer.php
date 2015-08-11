@@ -41,7 +41,7 @@ class Renderer {
 	private function renderNode($node, $template) {
 		$templateString = '';
 		foreach($node as $element) {
-			$elementString = $this->handleArgs($template[$element[0]], $element[2]);
+			$elementString = $this->handleArgList($template[$element[0]], $element[2]);
 			$templateString .= $this->renderNamespaces($elementString);
 		}
 		return $templateString;
@@ -53,7 +53,7 @@ class Renderer {
 		}
 		return $element;
 	}
-	private function handleArgs($string, $args) {
+	private function handleArgList($string, $args) {
 		$namespace = 'ARG';
 		$outString = $string;
 		$nameLength = strlen($namespace);
@@ -63,7 +63,7 @@ class Renderer {
 			if($pos !== false) {
 				$index = $outString[$pos + $nameLength];
 				if(is_numeric($index) && isset($args[$index - 1])) {
-					$outString = $this->handleArg($outString, $pos, $args[$index - 1], $index);
+					$outString = $this->handleReplace($outString, $pos, $args[$index - 1], $index);
 				}
 			}
 		}
@@ -71,7 +71,7 @@ class Renderer {
 
 		return $outString;
 	}
-	private function handleArg($string, $pos, $arg, $index) {
+	private function handleReplace($string, $pos, $arg, $index) {
 		$outString = $string;
 		$tagStart = $pos;
 		$tagEnd = $pos;
