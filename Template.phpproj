@@ -16,11 +16,20 @@
     <IncludeDebugInformation>false</IncludeDebugInformation>
   </PropertyGroup>
   <ItemGroup>
+    <Folder Include="tests\" />
     <Folder Include="src\" />
+    <Folder Include="tests\test_template\" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include=".travis.yml" />
+    <Compile Include="src\autoload.php" />
+    <Compile Include="tests\RendererTest.php" />
     <Compile Include="src\Renderer.php" />
     <Compile Include="src\RenderTree.php" />
     <Compile Include="src\Template.php" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="phpunit.xml" />
+    <Content Include="tests\test_template\test.json" />
   </ItemGroup>
 </Project>
