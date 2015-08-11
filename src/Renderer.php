@@ -47,9 +47,9 @@ class Renderer {
 		return $templateString;
 	}
 
-	private function renderNamespaces($element) {
+	private function renderNamespaces($elementString) {
 		foreach($this->namespaces as $namespace) {
-			$this->renderNamespace($element, $namespace);
+			$this->renderNamespace($elementString, $namespace);
 		}
 		return $element;
 	}
@@ -123,9 +123,22 @@ class Renderer {
 		}
 		return $data;
 	}
-	private function renderNamespace($element, $namespace) {
+
+	private function renderNamespace($elementString, $namespace) {
 		$data = $namespace['data'];
-		return $element;
+		$pos = 0;
+		do {
+			$pos = strpos($outString, $namespace, $pos + 1);
+			if($pos !== false) {
+				$index = $outString[$pos + $nameLength];
+				if(is_numeric($index) && isset($args[$index - 1])) {
+					$outString = $this->handleReplace($outString, $pos, $args[$index - 1], $index);
+				}
+			}
+		}
+		while($pos !== false && isset($outString[$pos]));
+
+		return $elementString;
 	}
 }
 ?>
