@@ -7,12 +7,21 @@ class RenderTree implements ArrayAccess {
 	private $list;
 	public function __construct() {
 	}
+	/*
+		Get the root element from which a template will be parsed
+	*/
     public function getRoot() {
         return $this->root;
     }
+	/*
+		Defines or moves the root element in a template
+	*/
 	public function setRoot($root) {
 		$this->root = $root;
 	}
+	/*
+		Adds a new element to the list
+	*/
 	public function add() {
 		$args = func_get_args();
 		$element_name = array_shift($args);

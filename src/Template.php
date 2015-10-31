@@ -25,6 +25,9 @@ class Template implements ArrayAccess {
 	public function getPath() {
 		return $this->basePath;
 	}
+	/*
+		Adds a JSON template file's entries to the element store
+	*/
 	private function loadFile($file) {
 		$filename = $this->basePath . DIRECTORY_SEPARATOR . $file . '.json';
 		if(!is_file($filename)) {
@@ -36,6 +39,10 @@ class Template implements ArrayAccess {
 			$this->addElementArray($data);
 		}
 	}
+
+	/*
+		Load all stored files.
+	*/
     public function loadFiles() {
         foreach($this->files as $file) {
 			$this->loadFile($file);
