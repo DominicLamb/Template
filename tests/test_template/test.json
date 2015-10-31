@@ -4,6 +4,9 @@
 	"badTokenIndex": "Blue is <ARG>",
 	"badTokenStart": "Blue is ARG1>",
 
+	"namespaceSimpleArg": "<SHORT:TEST> namespace!",
+	"namespaceSameArg": "<SHORT:TEST><SHORT:TEST> <SHORT:TEST> namespace!",
+
 	"nestedFirstArg": "Blue is <AR<ARG1>G1>",
 
 	"simpleFirstArg": "Blue is <ARG1>",
