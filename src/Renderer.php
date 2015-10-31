@@ -4,16 +4,15 @@ use \RuntimeException;
 
 class Renderer {
     private $namespaces = array();
+	/*
+		Adds a new namespace to the list.
+	*/
 	public function addNamespace($name, $key, $data = array()) {
-		$this->namespaces[$name] = array(
-			'key' => $key,
-			'data' => $data
-		);
+		$this->namespaces[$name] = new TemplateNamespace($key, $data);
 	}
-	public function addNamespaceData($name, $key, $value) {
-		$namespace = $this->getNamespace($name);
-        $namespace['data'][$key] = $value;
-	}
+	/*
+		Fetches a namespace by prefix.
+	*/
 	public function getNamespace($name) {
 		if(!isset($this->namespaces[$name])) {
 			throw new RuntimeException('Namespace not found: ' . $name);
@@ -21,6 +20,9 @@ class Renderer {
 		return $this->namespaces[$name];
 	}
 
+	/*
+		Converts a given template and tree into a parsed string.
+	*/
 	public function render(RenderTree $tree, Template $template) {
         $templateString = '';
 		$root = $tree->getRoot();
@@ -38,6 +40,37 @@ class Renderer {
         return $templateString;
 	}
 
+	/*
+		Finds the start of a token to evaluate.
+	*/
+	private function getTagStart($string, $start) {
+		$pos = $start;
+		while($pos && $string[$pos] != '<') {
+			$pos--;
+		}
+		if($string[$pos] != '<') {
+			return false;
+		}
+		return $pos;
+	}
+
+	/*
+		Find the matching end section of a template tag.
+	*/
+	private function getTagEnd($string, $start) {
+		$pos = $start;
+		while(isset($string[$pos]) && $string[$pos] != '>') {
+			$pos++;
+		}
+		if(!isset($string[$pos])) {
+			return false;
+		}
+		return $pos;
+	}
+
+	/*
+		Renders a node in the template tree.
+	*/
 	private function renderNode($node, $template) {
 		$templateString = '';
 		foreach($node as $element) {
@@ -49,96 +82,69 @@ class Renderer {
 
 	private function renderNamespaces($elementString) {
 		foreach($this->namespaces as $namespace) {
-			$this->renderNamespace($elementString, $namespace);
+			$elementString = $this->renderNamespace($elementString, $namespace);
 		}
-		return $element;
+		return $elementString;
 	}
 	private function handleArgList($string, $args) {
-		$namespace = 'ARG';
+		/*
+			Creates a temporary namespace, content will be replaced for
+			each discovered argument.
+		*/
+		$namespace = new TemplateNamespace('ARG');
 		$outString = $string;
-		$nameLength = strlen($namespace);
+		$nameLength = strlen($namespace->getName());
 		$pos = 0;
 		do {
-			$pos = strpos($outString, $namespace, $pos + 1);
+			$pos = strpos($outString, $namespace->getName(), $pos + 1);
 			if($pos !== false) {
 				$index = $outString[$pos + $nameLength];
 				if(is_numeric($index) && isset($args[$index - 1])) {
-					$outString = $this->handleReplace($outString, $pos, $args[$index - 1], $index);
+					$token_start = $this->getTagStart($outString, $pos);
+					$token_end = $this->getTagEnd($outString, $pos);
+					$token_parsed = '';
+
+					if($token_start !== false && $token_end !== false) {
+						$namespace->setAllData($args[$index - 1]);
+						$token = substr($outString, $token_start, ($token_end - $token_start) + 1);
+						$token_parsed = $namespace->interpret($token);
+						$outString = substr_replace($outString, $token_parsed, $token_start, ($token_end - $token_start) + 1);
+					}
+					
+
 				}
 			}
 		}
 		while($pos !== false && isset($outString[$pos]));
 
 		return $outString;
-	}
-	private function handleReplace($string, $pos, $arg, $index) {
-		$outString = $string;
-		$tagStart = $pos;
-		$tagEnd = $pos;
-		$length = strlen($string);
-
-		while($tagStart && $outString[$tagStart] != '<') {
-			$tagStart--;
-		}
-		while($tagEnd < $length && $outString[$tagEnd] != '>') {
-			$tagEnd++;
-		}
-		if($string[$tagStart] == '<' && isset($string[$tagEnd])) {
-			/*
-				Get string until tag starting position
-			*/
-			$outString = substr($string, 0, $tagStart);
-
-
-			$token = substr($string, $tagStart + 1, ($tagEnd - $tagStart - 1));
-
-			/*
-				Get the relevant data from the argument for this token
-			*/
-			$data = self::getArgValue($arg, $token);
-			/*
-				Replace token with text
-			*/
-			$outString .= $data;
-
-			/*
-				Add the rest of the string
-			*/
-			$outString .= substr($string, $tagEnd + 1);
-		}
-		return $outString;
-	}
-    private function getArgValue($arg, $token) {
-		$data = null;
-		$pos = strpos($token, ':');
-		if($pos !== false) {
-			$index = substr($token, $pos + 1);
-			if(isset($arg[$index])) {
-				$data = $arg[$index];
-			}
-		}
-		else
-		{
-			$data = $arg;
-		}
-		return $data;
 	}
 
 	private function renderNamespace($elementString, $namespace) {
-		$data = $namespace['data'];
+		$key = $namespace->getName();
+		$outString = $elementString;
+
 		$pos = 0;
 		do {
-			$pos = strpos($outString, $namespace, $pos + 1);
+			$pos = strpos($elementString, $key, $pos + 1);
 			if($pos !== false) {
-				$index = $outString[$pos + $nameLength];
-				if(is_numeric($index) && isset($args[$index - 1])) {
-					$outString = $this->handleReplace($outString, $pos, $args[$index - 1], $index);
+				$token_start = $this->getTagStart($outString, $pos);
+				$token_end = $this->getTagEnd($outString, $pos);
+				$token_parsed = '';
+
+				if($token_start !== false && $token_end !== false) {
+					$token = substr($outString, $token_start, ($token_end - $token_start) + 1);
+					$token_parsed = $namespace->interpret($token);
+					$outString = substr_replace($outString, $token_parsed, $token_start, ($token_end - $token_start) + 1);
 				}
+				
+				$pos += strlen($token_parsed);
 			}
 		}
 		while($pos !== false && isset($outString[$pos]));
 
-		return $elementString;
+
+		return $outString;
 	}
 }
 ?>
