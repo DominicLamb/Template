@@ -11,7 +11,9 @@ spl_autoload_register(function($fqcn) {
 	$classes = array(
 		'Schaflein\\Template\\Renderer' => 'Renderer',
 		'Schaflein\\Template\RenderTree' => 'RenderTree',
-		'Schaflein\\Template\\Template' => 'Template'
+		'Schaflein\\Template\\Template' => 'Template',
+		'Schaflein\\Template\\TemplateNamespace' => 'TemplateNamespace',
+        'Schaflein\\Template\\TokenInterpreter' => 'TokenInterpreter'
 	);
 	if(isset($classes[$fqcn])) {
 		include(__DIR__ . DIRECTORY_SEPARATOR . $classes[$fqcn] . $extension);
